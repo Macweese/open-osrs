@@ -289,17 +289,11 @@ public class FriendsChatPlugin extends Plugin
 			{
 				chatTitleWidget.setText(TITLE + " (" + friendsChatManager.getCount() + "/100)");
 			}
-			else if (chatList.getChildren() == null && !Strings.isNullOrEmpty(owner.getText()))
+			else if (config.recentChats() && chatList.getChildren() == null && !Strings.isNullOrEmpty(owner.getText()))
 			{
-				if (config.recentChats())
-				{
-					chatTitleWidget.setText(RECENT_TITLE);
-					loadFriendsChats();
-				}
-				else
-				{
-					chatTitleWidget.setText(TITLE);
-				}
+				chatTitleWidget.setText(RECENT_TITLE);
+
+				loadFriendsChats();
 			}
 		}
 

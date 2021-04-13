@@ -8,8 +8,7 @@ import net.runelite.mapping.ObfuscatedSignature;
 @Implements("GZipDecompressor")
 public class GZipDecompressor {
 	@ObfuscatedName("t")
-	@Export("formattedOperatingSystemName")
-	public static String formattedOperatingSystemName;
+	public static String field4046;
 	@ObfuscatedName("n")
 	@Export("inflater")
 	Inflater inflater;

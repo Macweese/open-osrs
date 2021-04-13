@@ -56,8 +56,7 @@ public class JagexCache {
 	@Export("cacheGamebuild")
 	static int cacheGamebuild;
 	@ObfuscatedName("p")
-	@Export("operatingSystemName")
-	static String operatingSystemName;
+	static String field2065;
 	@ObfuscatedName("m")
 	@Export("userHomeDirectory")
 	static String userHomeDirectory;

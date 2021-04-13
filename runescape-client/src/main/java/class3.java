@@ -119,8 +119,7 @@ public class class3 implements Enumerated {
 		descriptor = "(Ljava/io/File;B)V",
 		garbageValue = "1"
 	)
-	@Export("assertCacheDirExists")
-	static void assertCacheDirExists(File var0) {
+	static void method36(File var0) {
 		FileSystem.FileSystem_cacheDir = var0; // L: 16
 		if (!FileSystem.FileSystem_cacheDir.exists()) { // L: 17
 			throw new RuntimeException("");

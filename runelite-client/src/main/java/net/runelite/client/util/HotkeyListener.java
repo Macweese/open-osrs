@@ -83,16 +83,12 @@ public abstract class HotkeyListener implements KeyListener
 	{
 		if (keybind.get().matches(e))
 		{
-			if (isPressed)
-			{
-				hotkeyReleased();
-			}
 			isPressed = false;
 			isConsumingTyped = false;
 		}
 	}
 
-	protected void hotkeyPressed()
+	public void hotkeyPressed()
 	{
 	}
 	

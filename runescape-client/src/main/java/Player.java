@@ -90,26 +90,22 @@ public final class Player extends Actor {
 	@ObfuscatedGetter(
 		intValue = 123594343
 	)
-	@Export("minX")
-	int minX;
+	int field641;
 	@ObfuscatedName("x")
 	@ObfuscatedGetter(
 		intValue = 2053334325
 	)
-	@Export("minY")
-	int minY;
+	int field642;
 	@ObfuscatedName("f")
 	@ObfuscatedGetter(
 		intValue = 1294199975
 	)
-	@Export("maxX")
-	int maxX;
+	int field640;
 	@ObfuscatedName("g")
 	@ObfuscatedGetter(
 		intValue = -1259880177
 	)
-	@Export("maxY")
-	int maxY;
+	int field644;
 	@ObfuscatedName("u")
 	@Export("isUnanimated")
 	boolean isUnanimated;

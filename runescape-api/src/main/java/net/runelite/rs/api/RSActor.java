@@ -70,15 +70,7 @@ public interface RSActor extends RSRenderable, Actor
 
 	@Import("sequenceFrame")
 	@Override
-	int getAnimationFrame();
-
-	@Import("sequenceFrame")
-	@Override
 	int getActionFrame();
-
-	@Import("sequenceFrame")
-	@Override
-	void setAnimationFrame(int frame);
 
 	@Import("sequenceFrame")
 	@Override
@@ -177,15 +169,15 @@ public interface RSActor extends RSRenderable, Actor
 
 	@Import("walkBackSequence")
 	@Override
-	int getWalkRotate180();
+	int getWalkBackAnimation();
 
 	@Import("walkLeftSequence")
 	@Override
-	int getWalkRotateLeft();
+	int getWalkLeftAnimation();
 
 	@Import("walkRightSequence")
 	@Override
-	int getWalkRotateRight();
+	int getWalkRightAnimation();
 
 	@Import("runSequence")
 	@Override

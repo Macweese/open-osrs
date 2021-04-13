@@ -395,15 +395,10 @@ public enum Varbits
 	MULTICOMBAT_AREA(4605),
 
 	/**
-	 * Kingdom of Miscellania Management
-	 * Kingdom Approval is represented as a 7-bit unsigned integer; 127 corresponds to 100% approval
+	 * Kingdom Management
 	 */
-	KINGDOM_APPROVAL(72),
-	KINGDOM_COFFER(74),
-
-	// TODO: Remove next major
-	@Deprecated
 	KINGDOM_FAVOR(72),
+	KINGDOM_COFFER(74),
 
 	/**
 	 * The Hand in the Sand quest status
@@ -614,15 +609,6 @@ public enum Varbits
 	 *
 	 */
 	PARASITE(10151),
-
-	/**
-	 * Whether the vanilla wiki entity lookup is displayed under the minimap
-	 *
-	 * 0 = Enabled
-	 * 1 = Disabled
-	 *
-	 */
-	WIKI_ENTITY_LOOKUP(10113),
 
 	/**
 	 * Whether the Special Attack orb is disabled due to being in a PvP area

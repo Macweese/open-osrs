@@ -43,7 +43,12 @@ public class InstantTypeAdapter extends TypeAdapter<Instant>
 			return;
 		}
 
-		out.value(value.toEpochMilli());
+		out.beginObject()
+			.name("seconds")
+			.value(value.getEpochSecond())
+			.name("nanos")
+			.value(value.getNano())
+			.endObject();
 	}
 
 	@Override
@@ -53,12 +58,6 @@ public class InstantTypeAdapter extends TypeAdapter<Instant>
 		{
 			in.nextNull();
 			return null;
-		}
-
-		if (in.peek() == JsonToken.NUMBER)
-		{
-			long jsTime = in.nextLong();
-			return Instant.ofEpochMilli(jsTime);
 		}
 
 		long seconds = 0;

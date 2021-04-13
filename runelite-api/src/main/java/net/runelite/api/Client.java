@@ -401,16 +401,6 @@ public interface Client extends GameEngine
 	 * @see ItemID
 	 */
 	@Nonnull
-	ItemComposition getItemComposition(int id);
-
-	/**
-	 * Gets the item composition corresponding to an items ID.
-	 *
-	 * @param id the item ID
-	 * @return the corresponding item composition
-	 * @see ItemID
-	 */
-	@Nonnull
 	ItemComposition getItemDefinition(int id);
 
 	/**

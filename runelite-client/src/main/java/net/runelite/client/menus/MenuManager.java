@@ -41,6 +41,7 @@ import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.PlayerMenuOptionsChanged;
 import net.runelite.api.events.WidgetMenuOptionClicked;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 
@@ -77,7 +78,8 @@ public class MenuManager
 	 */
 	public void addManagedCustomMenu(WidgetMenuOption customMenuOption)
 	{
-		managedMenuOptions.put(customMenuOption.getWidgetId(), customMenuOption);
+		WidgetInfo widget = customMenuOption.getWidget();
+		managedMenuOptions.put(widget.getId(), customMenuOption);
 	}
 
 	/**
@@ -87,7 +89,8 @@ public class MenuManager
 	 */
 	public void removeManagedCustomMenu(WidgetMenuOption customMenuOption)
 	{
-		managedMenuOptions.remove(customMenuOption.getWidgetId(), customMenuOption);
+		WidgetInfo widget = customMenuOption.getWidget();
+		managedMenuOptions.remove(widget.getId(), customMenuOption);
 	}
 
 	private boolean menuContainsCustomMenu(WidgetMenuOption customMenuOption)
@@ -205,7 +208,6 @@ public class MenuManager
 				customMenu.setMenuOption(event.getMenuOption());
 				customMenu.setMenuTarget(event.getMenuTarget());
 				customMenu.setWidget(curMenuOption.getWidget());
-				customMenu.setWidgetId(curMenuOption.getWidgetId());
 				eventBus.post(customMenu);
 				return;
 			}

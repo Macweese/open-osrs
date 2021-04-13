@@ -140,9 +140,6 @@ public class SlayerPlugin extends Plugin
 	private SlayerConfig config;
 
 	@Inject
-	private ConfigManager configManager;
-
-	@Inject
 	private OverlayManager overlayManager;
 
 	@Inject
@@ -230,17 +227,12 @@ public class SlayerPlugin extends Plugin
 		{
 			cachedXp = client.getSkillExperience(SLAYER);
 
-			migrateConfig();
-
-			if (getIntProfileConfig(SlayerConfig.AMOUNT_KEY) != -1
-				&& !getStringProfileConfig(SlayerConfig.TASK_NAME_KEY).isEmpty())
+			if (config.amount() != -1
+				&& !config.taskName().isEmpty())
 			{
-				setExpeditiousChargeCount(getIntProfileConfig(SlayerConfig.EXPEDITIOUS_CHARGES_KEY));
-				setSlaughterChargeCount(getIntProfileConfig(SlayerConfig.SLAUGHTER_CHARGES_KEY));
-				clientThread.invoke(() -> setTask(getStringProfileConfig(SlayerConfig.TASK_NAME_KEY),
-					getIntProfileConfig(SlayerConfig.AMOUNT_KEY),
-					getIntProfileConfig(SlayerConfig.INIT_AMOUNT_KEY),
-					getStringProfileConfig(SlayerConfig.TASK_LOC_KEY), false));
+				setExpeditiousChargeCount(config.expeditious());
+				setSlaughterChargeCount(config.slaughter());
+				clientThread.invoke(() -> setTask(config.taskName(), config.amount(), config.initialAmount(), config.taskLocation(), false));
 			}
 		}
 
@@ -283,57 +275,27 @@ public class SlayerPlugin extends Plugin
 				taggedNpcs.clear();
 				break;
 			case LOGGED_IN:
-				migrateConfig();
-				if (getIntProfileConfig(SlayerConfig.AMOUNT_KEY) != -1
-					&& !getStringProfileConfig(SlayerConfig.TASK_NAME_KEY).isEmpty()
+				if (config.amount() != -1
+					&& !config.taskName().isEmpty()
 					&& loginFlag)
 				{
-					setExpeditiousChargeCount(getIntProfileConfig(SlayerConfig.EXPEDITIOUS_CHARGES_KEY));
-					setSlaughterChargeCount(getIntProfileConfig(SlayerConfig.SLAUGHTER_CHARGES_KEY));
-					setTask(getStringProfileConfig(SlayerConfig.TASK_NAME_KEY),
-						getIntProfileConfig(SlayerConfig.AMOUNT_KEY),
-						getIntProfileConfig(SlayerConfig.INIT_AMOUNT_KEY),
-						getStringProfileConfig(SlayerConfig.TASK_LOC_KEY), false);
+					setExpeditiousChargeCount(config.expeditious());
+					setSlaughterChargeCount(config.slaughter());
+					setTask(config.taskName(), config.amount(), config.initialAmount(), config.taskLocation(), false);
 					loginFlag = false;
 				}
 				break;
 		}
 	}
 
-	@VisibleForTesting
-	int getIntProfileConfig(String key)
-	{
-		Integer value = configManager.getRSProfileConfiguration(SlayerConfig.GROUP_NAME, key, int.class);
-		return value == null ? -1 : value;
-	}
-
-	@VisibleForTesting
-	String getStringProfileConfig(String key)
-	{
-		String value = configManager.getRSProfileConfiguration(SlayerConfig.GROUP_NAME, key, String.class);
-		return value == null ? "" : value;
-	}
-
-	private void setProfileConfig(String key, Object value)
-	{
-		if (value != null)
-		{
-			configManager.setRSProfileConfiguration(SlayerConfig.GROUP_NAME, key, value);
-		}
-		else
-		{
-			configManager.unsetRSProfileConfiguration(SlayerConfig.GROUP_NAME, key);
-		}
-	}
-
 	private void save()
 	{
-		setProfileConfig(SlayerConfig.AMOUNT_KEY, amount);
-		setProfileConfig(SlayerConfig.INIT_AMOUNT_KEY, initialAmount);
-		setProfileConfig(SlayerConfig.TASK_NAME_KEY, taskName);
-		setProfileConfig(SlayerConfig.TASK_LOC_KEY, taskLocation);
-		setProfileConfig(SlayerConfig.EXPEDITIOUS_CHARGES_KEY, expeditiousChargeCount);
-		setProfileConfig(SlayerConfig.SLAUGHTER_CHARGES_KEY, slaughterChargeCount);
+		config.amount(amount);
+		config.initialAmount(initialAmount);
+		config.taskName(taskName);
+		config.taskLocation(taskLocation);
+		config.expeditious(expeditiousChargeCount);
+		config.slaughter(slaughterChargeCount);
 	}
 
 	@Subscribe
@@ -383,7 +345,7 @@ public class SlayerPlugin extends Plugin
 				int amount = Integer.parseInt(mAssignBoss.group(2));
 				setTask(mAssignBoss.group(1), amount, amount);
 				int points = Integer.parseInt(mAssignBoss.group(3).replaceAll(",", ""));
-				setProfileConfig(SlayerConfig.POINTS_KEY, points);
+				config.points(points);
 			}
 			else if (mCurrent.find())
 			{
@@ -401,12 +363,12 @@ public class SlayerPlugin extends Plugin
 			if (braceletText.contains("bracelet of slaughter"))
 			{
 				slaughterChargeCount = SLAUGHTER_CHARGE;
-				setProfileConfig(SlayerConfig.SLAUGHTER_CHARGES_KEY, slaughterChargeCount);
+				config.slaughter(slaughterChargeCount);
 			}
 			else if (braceletText.contains("expeditious bracelet"))
 			{
 				expeditiousChargeCount = EXPEDITIOUS_CHARGE;
-				setProfileConfig(SlayerConfig.EXPEDITIOUS_CHARGES_KEY, expeditiousChargeCount);
+				config.expeditious(expeditiousChargeCount);
 			}
 		}
 
@@ -418,12 +380,12 @@ public class SlayerPlugin extends Plugin
 				Matcher mPoints = REWARD_POINTS.matcher(w.getText());
 				if (mPoints.find())
 				{
-					final int prevPoints = getIntProfileConfig(SlayerConfig.POINTS_KEY);
+					final int prevPoints = config.points();
 					int points = Integer.parseInt(mPoints.group(1).replaceAll(",", ""));
 
 					if (prevPoints != points)
 					{
-						setProfileConfig(SlayerConfig.POINTS_KEY, points);
+						config.points(points);
 						removeCounter();
 						addCounter();
 					}
@@ -464,7 +426,7 @@ public class SlayerPlugin extends Plugin
 
 			amount++;
 			slaughterChargeCount = mSlaughter.find() ? Integer.parseInt(mSlaughter.group(1)) : SLAUGHTER_CHARGE;
-			setProfileConfig(SlayerConfig.SLAUGHTER_CHARGES_KEY, slaughterChargeCount);
+			config.slaughter(slaughterChargeCount);
 		}
 
 		if (chatMsg.startsWith(CHAT_BRACELET_EXPEDITIOUS))
@@ -473,7 +435,7 @@ public class SlayerPlugin extends Plugin
 
 			amount--;
 			expeditiousChargeCount = mExpeditious.find() ? Integer.parseInt(mExpeditious.group(1)) : EXPEDITIOUS_CHARGE;
-			setProfileConfig(SlayerConfig.EXPEDITIOUS_CHARGES_KEY, expeditiousChargeCount);
+			config.expeditious(expeditiousChargeCount);
 		}
 
 		if (chatMsg.startsWith(CHAT_BRACELET_EXPEDITIOUS_CHARGE))
@@ -486,7 +448,7 @@ public class SlayerPlugin extends Plugin
 			}
 
 			expeditiousChargeCount = Integer.parseInt(mExpeditious.group(1));
-			setProfileConfig(SlayerConfig.EXPEDITIOUS_CHARGES_KEY, expeditiousChargeCount);
+			config.expeditious(expeditiousChargeCount);
 		}
 
 		if (chatMsg.startsWith(CHAT_BRACELET_SLAUGHTER_CHARGE))
@@ -498,7 +460,7 @@ public class SlayerPlugin extends Plugin
 			}
 
 			slaughterChargeCount = Integer.parseInt(mSlaughter.group(1));
-			setProfileConfig(SlayerConfig.SLAUGHTER_CHARGES_KEY, slaughterChargeCount);
+			config.slaughter(slaughterChargeCount);
 		}
 
 		if (chatMsg.startsWith("You've completed") && (chatMsg.contains("Slayer master") || chatMsg.contains("Slayer Master")))
@@ -517,12 +479,12 @@ public class SlayerPlugin extends Plugin
 				if (mTasks != null)
 				{
 					int streak = Integer.parseInt(mTasks.replace(",", ""));
-					setProfileConfig(SlayerConfig.STREAK_KEY, streak);
+					config.streak(streak);
 				}
 				if (mPoints != null)
 				{
 					int points = Integer.parseInt(mPoints.replace(",", ""));
-					setProfileConfig(SlayerConfig.POINTS_KEY, points);
+					config.points(points);
 				}
 			}
 
@@ -635,7 +597,7 @@ public class SlayerPlugin extends Plugin
 	@Subscribe
 	private void onConfigChanged(ConfigChanged event)
 	{
-		if (!event.getGroup().equals(SlayerConfig.GROUP_NAME) || !event.getKey().equals("infobox"))
+		if (!event.getGroup().equals("slayer") || !event.getKey().equals("infobox"))
 		{
 			return;
 		}
@@ -665,8 +627,7 @@ public class SlayerPlugin extends Plugin
 			amount--;
 		}
 
-		// save changed value
-		setProfileConfig(SlayerConfig.AMOUNT_KEY, amount);
+		config.amount(amount); // save changed value
 
 		if (!config.showInfobox())
 		{
@@ -811,7 +772,7 @@ public class SlayerPlugin extends Plugin
 		}
 
 		counter = new TaskCounter(taskImg, this, amount);
-		counter.setTooltip(String.format(taskTooltip, capsString(taskName), getIntProfileConfig(SlayerConfig.POINTS_KEY), getIntProfileConfig(SlayerConfig.STREAK_KEY)));
+		counter.setTooltip(String.format(taskTooltip, capsString(taskName), config.points(), config.streak()));
 
 		infoBoxManager.addInfoBox(counter);
 	}
@@ -929,27 +890,5 @@ public class SlayerPlugin extends Plugin
 	private String capsString(String str)
 	{
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
-	}
-
-	private void migrateConfig()
-	{
-		migrateConfigKey(SlayerConfig.TASK_NAME_KEY);
-		migrateConfigKey(SlayerConfig.AMOUNT_KEY);
-		migrateConfigKey(SlayerConfig.INIT_AMOUNT_KEY);
-		migrateConfigKey(SlayerConfig.TASK_LOC_KEY);
-		migrateConfigKey(SlayerConfig.STREAK_KEY);
-		migrateConfigKey(SlayerConfig.POINTS_KEY);
-		migrateConfigKey(SlayerConfig.EXPEDITIOUS_CHARGES_KEY);
-		migrateConfigKey(SlayerConfig.SLAUGHTER_CHARGES_KEY);
-	}
-
-	private void migrateConfigKey(String key)
-	{
-		Object value = configManager.getConfiguration(SlayerConfig.GROUP_NAME, key);
-		if (value != null)
-		{
-			configManager.unsetConfiguration(SlayerConfig.GROUP_NAME, key);
-			configManager.setRSProfileConfiguration(SlayerConfig.GROUP_NAME, key, value);
-		}
 	}
 }

@@ -28,7 +28,7 @@ import java.awt.Color;
 import javax.swing.JButton;
 import lombok.Getter;
 
-public class DevToolsButton extends JButton
+class DevToolsButton extends JButton
 {
 	@Getter
 	private boolean active;
@@ -52,21 +52,5 @@ public class DevToolsButton extends JButton
 		{
 			setBackground(null);
 		}
-	}
-
-	void addFrame(DevToolsFrame frame)
-	{
-		frame.setDevToolsButton(this);
-		addActionListener(ev ->
-		{
-			if (isActive())
-			{
-				frame.close();
-			}
-			else
-			{
-				frame.open();
-			}
-		});
 	}
 }

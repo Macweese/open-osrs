@@ -32,12 +32,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -59,12 +62,13 @@ import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.DynamicGridLayout;
 import net.runelite.client.ui.FontManager;
 
 @Slf4j
-class VarInspector extends DevToolsFrame
+class VarInspector extends JFrame
 {
 	@Getter
 	private enum VarType
@@ -102,15 +106,27 @@ class VarInspector extends DevToolsFrame
 	private Map<Integer, Object> varcs = null;
 
 	@Inject
-	VarInspector(Client client, ClientThread clientThread, EventBus eventBus)
+	VarInspector(Client client, ClientThread clientThread, EventBus eventBus, DevToolsPlugin plugin)
 	{
 		this.client = client;
 		this.clientThread = clientThread;
 		this.eventBus = eventBus;
 
 		setTitle("OpenOSRS Var Inspector");
+		setIconImage(ClientUI.ICON);
 
 		setLayout(new BorderLayout());
+
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter()
+		{
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				close();
+				plugin.getVarInspector().setActive(false);
+			}
+		});
 
 		tracker.setLayout(new DynamicGridLayout(0, 1, 0, 3));
 
@@ -316,7 +332,6 @@ class VarInspector extends DevToolsFrame
 		}
 	}
 
-	@Override
 	public void open()
 	{
 		if (oldVarps == null)
@@ -346,15 +361,16 @@ class VarInspector extends DevToolsFrame
 		});
 
 		eventBus.register(this);
-		super.open();
+		setVisible(true);
+		toFront();
+		repaint();
 	}
 
-	@Override
 	public void close()
 	{
-		super.close();
 		tracker.removeAll();
 		eventBus.unregister(this);
+		setVisible(false);
 		varcs = null;
 		varbits = null;
 	}

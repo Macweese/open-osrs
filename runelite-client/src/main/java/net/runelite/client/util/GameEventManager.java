@@ -168,7 +168,6 @@ public class GameEventManager
 
 				Arrays.stream(tile.getGameObjects())
 					.filter(Objects::nonNull)
-					.filter(object -> object.getSceneMinLocation().equals(tile.getSceneLocation()))
 					.forEach(object ->
 					{
 						final GameObjectSpawned objectSpawned = new GameObjectSpawned();

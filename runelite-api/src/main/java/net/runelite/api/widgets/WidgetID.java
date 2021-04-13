@@ -178,7 +178,6 @@ public class WidgetID
 	public static final int DIALOG_NOTIFICATION_GROUP_ID = 229;
 	public static final int DIALOG_SPRITE2_ID = 11;
 	public static final int MULTISKILL_MENU_GROUP_ID = 270;
-	public static final int TEMPOROSS_GROUP_ID = 437;
 
 	static class WorldMap
 	{
@@ -385,18 +384,17 @@ public class WidgetID
 
 	static class Equipment
 	{
-		static final int HELMET = 15;
-		static final int CAPE = 16;
-		static final int AMULET = 17;
-		static final int WEAPON = 18;
-		static final int BODY = 19;
-		static final int SHIELD = 20;
-		static final int LEGS = 21;
-		static final int GLOVES = 22;
-		static final int BOOTS = 23;
-		static final int RING = 24;
-		static final int AMMO = 25;
-
+		static final int HELMET = 14;
+		static final int CAPE = 15;
+		static final int AMULET = 16;
+		static final int WEAPON = 17;
+		static final int BODY = 18;
+		static final int SHIELD = 19;
+		static final int LEGS = 20;
+		static final int GLOVES = 21;
+		static final int BOOTS = 22;
+		static final int RING = 23;
+		static final int AMMO = 24;
 		static final int INVENTORY_ITEM_CONTAINER = 0;
 	}
 
@@ -1077,10 +1075,6 @@ public class WidgetID
 		static final int TELEPORT = 59;
 	}
 
-	static class TemporossStatus
-	{
-		static final int STATUS_INDICATOR = 4;
-	}
 
 	static class DialogPlayer
 	{

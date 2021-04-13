@@ -29,7 +29,6 @@ import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import javax.annotation.Nullable;
-import net.runelite.api.annotations.VisibleForDevtools;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
@@ -106,6 +105,10 @@ public interface Actor extends Renderable, Locatable
 	 */
 	LocalPoint getLocalLocation();
 
+	void setIdlePoseAnimation(int animation);
+
+	void setPoseAnimation(int animation);
+
 	/**
 	 * Get the index of the PoseFrame (the index as it appears in the sequenceDefinition "frames" array).
 	 */
@@ -135,83 +138,21 @@ public interface Actor extends Renderable, Locatable
 	int getAnimation();
 
 	/**
-	 * Gets the secondary animation the actor is performing. Usually an idle animation, or one of the walking ones.
+	 * Gets the secondary animation the actor is performing.
 	 *
 	 * @return the animation ID
 	 * @see AnimationID
 	 */
 	int getPoseAnimation();
 
-	@VisibleForDevtools
-	void setPoseAnimation(int animation);
-
 	/**
-	 * The idle pose animation. If the actor is not walking or otherwise animating, this will be used
-	 * for their pose animation.
+	 * If this is equal to the pose animation, the pose animation is ignored when
+	 * you are doing another action.
 	 *
 	 * @return the animation ID
 	 * @see AnimationID
 	 */
 	int getIdlePoseAnimation();
-
-	@VisibleForDevtools
-	void setIdlePoseAnimation(int animation);
-
-	/**
-	 * Animation used for rotating left if the actor is also not walking
-	 *
-	 * @return the animation ID
-	 * @see AnimationID
-	 */
-	int getIdleRotateLeft();
-
-	/**
-	 * Animation used for rotating right if the actor is also not walking
-	 *
-	 * @return the animation ID
-	 * @see AnimationID
-	 */
-	int getIdleRotateRight();
-
-	/**
-	 * Animation used for walking
-	 *
-	 * @return the animation ID
-	 * @see AnimationID
-	 */
-	int getWalkAnimation();
-
-	/**
-	 * Animation used for rotating left while walking
-	 *
-	 * @return the animation ID
-	 * @see AnimationID
-	 */
-	int getWalkRotateLeft();
-
-	/**
-	 * Animation used for rotating right while walking
-	 *
-	 * @return the animation ID
-	 * @see AnimationID
-	 */
-	int getWalkRotateRight();
-
-	/**
-	 * Animation used for an about-face while walking
-	 *
-	 * @return the animation ID
-	 * @see AnimationID
-	 */
-	int getWalkRotate180();
-
-	/**
-	 * Animation used for running
-	 *
-	 * @return the animation ID
-	 * @see AnimationID
-	 */
-	int getRunAnimation();
 
 	/**
 	 * Sets an animation for the actor to perform.
@@ -222,62 +163,30 @@ public interface Actor extends Renderable, Locatable
 	void setAnimation(int animation);
 
 	/**
-	 * Get the frame of the animation the actor is performing
-	 *
-	 * @return the frame
-	 */
-	int getAnimationFrame();
-
-	/**
 	 * Sets the frame of the animation the actor is performing.
 	 *
-	 * @param frame the animation frame
-	 * @deprecated use setAnimationFrame
+	 * @param actionFrame the animation frame
 	 */
-	@Deprecated(since = "5.0.0", forRemoval = false) // deprecated upstream
-	void setActionFrame(int frame);
+	void setActionFrame(int actionFrame);
 
 	/**
-	 * Sets the frame of the animation the actor is performing.
+	 * Gets the graphic that is currently on the player.
 	 *
-	 * @param frame the animation frame
-	 */
-	void setAnimationFrame(int frame);
-
-	/**
-	 * Get the graphic/spotanim that is currently on the actor.
-	 *
-	 * @return the spotanim of the actor
+	 * @return the graphic of the actor
 	 * @see GraphicID
 	 */
 	int getGraphic();
 
-	/**
-	 * Set the graphic/spotanim that is currently on the actor.
-	 *
-	 * @param graphic The spotanim id
-	 * @see GraphicID
-	 */
 	void setGraphic(int graphic);
 
-	/**
-	 * Get the frame of the currently playing spotanim
-	 *
-	 * @return
-	 */
-	int getSpotAnimFrame();
+	int getSpotAnimationFrame();
 
-	/**
-	 * Set the frame of the currently playing spotanim
-	 *
-	 * @param spotAnimFrame
-	 */
 	void setSpotAnimFrame(int spotAnimFrame);
 
 	/**
 	 * Get the number of cycles the SpotAnimation frame has been displayed for.
 	 */
-	int getSpotAnimFrameCycle();
+	int getSpotAnimationFrameCycle();
 
 	/**
 	 * Gets the canvas area of the current tile the actor is standing on.
@@ -313,11 +222,11 @@ public interface Actor extends Renderable, Locatable
 	 * Gets the point at which a sprite should be drawn, relative to the
 	 * current location with the given z-axis offset.
 	 *
-	 * @param sprite the sprite to draw
+	 * @param spritePixels the sprite to draw
 	 * @param zOffset the z-axis offset
 	 * @return the sprite drawing location
 	 */
-	Point getCanvasSpriteLocation(SpritePixels sprite, int zOffset);
+	Point getCanvasSpriteLocation(SpritePixels spritePixels, int zOffset);
 
 	/**
 	 * Gets a point on the canvas of where this actors mini-map indicator
@@ -381,6 +290,16 @@ public interface Actor extends Renderable, Locatable
 	int getTurnLeftAnimation();
 
 	int getTurnRightAnimation();
+
+	int getWalkAnimation();
+
+	int getWalkBackAnimation();
+
+	int getWalkLeftAnimation();
+
+	int getWalkRightAnimation();
+
+	int getRunAnimation();
 
 	/**
 	 * Returns true if this NPC has died

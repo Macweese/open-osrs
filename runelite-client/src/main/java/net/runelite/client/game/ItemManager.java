@@ -56,7 +56,6 @@ import net.runelite.api.SpritePixels;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.PostItemComposition;
 import net.runelite.client.callback.ClientThread;
-import net.runelite.client.config.RuneLiteConfig;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.util.AsyncBufferedImage;
@@ -88,7 +87,6 @@ public class ItemManager
 	private final Client client;
 	private final ClientThread clientThread;
 	private final ItemClient itemClient;
-	private final RuneLiteConfig runeLiteConfig;
 
 	private Map<Integer, ItemPrice> itemPrices = Collections.emptyMap();
 	private Map<Integer, ItemStats> itemStats = Collections.emptyMap();
@@ -173,12 +171,11 @@ public class ItemManager
 
 	@Inject
 	public ItemManager(Client client, ScheduledExecutorService scheduledExecutorService, ClientThread clientThread,
-		OkHttpClient okHttpClient, EventBus eventBus, RuneLiteConfig runeLiteConfig)
+		OkHttpClient okHttpClient, EventBus eventBus)
 	{
 		this.client = client;
 		this.clientThread = clientThread;
 		this.itemClient = new ItemClient(okHttpClient);
-		this.runeLiteConfig = runeLiteConfig;
 
 		scheduledExecutorService.scheduleWithFixedDelay(this::loadPrices, 0, 30, TimeUnit.MINUTES);
 		scheduledExecutorService.submit(this::loadStats);
@@ -203,7 +200,7 @@ public class ItemManager
 				@Override
 				public ItemComposition load(Integer key) throws Exception
 				{
-					return client.getItemComposition(key);
+					return client.getItemDefinition(key);
 				}
 			});
 
@@ -296,17 +293,17 @@ public class ItemManager
 	 */
 	public int getItemPrice(int itemID)
 	{
-		return getItemPriceWithSource(itemID, runeLiteConfig.useWikiItemPrices());
+		return getItemPrice(itemID, false);
 	}
 
 	/**
 	 * Look up an item's price
 	 *
 	 * @param itemID item id
-	 * @param useWikiPrice use the actively traded/wiki price
+	 * @param ignoreUntradeableMap should the price returned ignore items that are not tradeable for coins in regular way
 	 * @return item price
 	 */
-	public int getItemPriceWithSource(int itemID, boolean useWikiPrice)
+	public int getItemPrice(int itemID, boolean ignoreUntradeableMap)
 	{
 		if (itemID == COINS_995)
 		{
@@ -334,14 +331,19 @@ public class ItemManager
 
 			if (ip != null)
 			{
-				price = useWikiPrice && ip.getWikiPrice() > 0 ? ip.getWikiPrice() : ip.getPrice();
+				price += ip.getPrice();
 			}
 		}
 		else
 		{
 			for (final ItemMapping mappedItem : mappedItems)
 			{
-				price += getItemPriceWithSource(mappedItem.getTradeableItem(), useWikiPrice) * mappedItem.getQuantity();
+				if (ignoreUntradeableMap && mappedItem.isUntradeable())
+				{
+					continue;
+				}
+
+				price += getItemPrice(mappedItem.getTradeableItem(), ignoreUntradeableMap) * mappedItem.getQuantity();
 			}
 		}
 

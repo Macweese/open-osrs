@@ -123,10 +123,6 @@ class HiscoreResultBuilder
 			hiscoreResult.setSarachnis(skills.get(index++));
 			hiscoreResult.setScorpia(skills.get(index++));
 			hiscoreResult.setSkotizo(skills.get(index++));
-			if (skills.size() >= 81)
-			{
-				hiscoreResult.setTempoross(skills.get(index++));
-			}
 			hiscoreResult.setGauntlet(skills.get(index++));
 			hiscoreResult.setCorruptedGauntlet(skills.get(index++));
 			hiscoreResult.setTheatreOfBlood(skills.get(index++));

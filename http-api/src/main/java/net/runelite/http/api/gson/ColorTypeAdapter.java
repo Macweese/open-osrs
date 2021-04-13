@@ -43,7 +43,10 @@ public class ColorTypeAdapter extends TypeAdapter<Color>
 		}
 
 		int rgba = value.getRGB();
-		out.value(String.format("#%08X", rgba));
+		out.beginObject()
+			.name("value")
+			.value(rgba)
+			.endObject();
 	}
 
 	@Override
@@ -54,18 +57,7 @@ public class ColorTypeAdapter extends TypeAdapter<Color>
 			case NULL:
 				in.nextNull();
 				return null;
-			case STRING:
-			{
-				String value = in.nextString();
-				if (value.charAt(0) == '#')
-				{
-					value = value.substring(1);
-				}
-				int intValue = Integer.parseUnsignedInt(value, 16);
-				return new Color(intValue, true);
-			}
 			case BEGIN_OBJECT:
-			{
 				in.beginObject();
 				double value = 0;
 				while (in.peek() != JsonToken.END_OBJECT)
@@ -82,7 +74,6 @@ public class ColorTypeAdapter extends TypeAdapter<Color>
 				}
 				in.endObject();
 				return new Color((int) value, true);
-			}
 		}
 		return null; // throws
 	}

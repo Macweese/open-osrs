@@ -16,8 +16,8 @@ public class DynamicObject extends Renderable {
 	@ObfuscatedGetter(
 		intValue = 1685580933
 	)
-	@Export("currentPort")
-	static int currentPort;
+	@Export("port3")
+	static int port3;
 	@ObfuscatedName("n")
 	@ObfuscatedGetter(
 		intValue = -1583763067

@@ -130,9 +130,6 @@ public class ItemChargePlugin extends Plugin
 	private ClientThread clientThread;
 
 	@Inject
-	private ConfigManager configManager;
-
-	@Inject
 	private OverlayManager overlayManager;
 
 	@Inject
@@ -176,7 +173,7 @@ public class ItemChargePlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
-		if (!event.getGroup().equals(ItemChargeConfig.GROUP))
+		if (!event.getGroup().equals("itemCharge"))
 		{
 			return;
 		}
@@ -313,7 +310,7 @@ public class ItemChargePlugin extends Plugin
 			}
 			else if (bindingNecklaceUsedMatcher.find())
 			{
-				updateBindingNecklaceCharges(getItemCharges(ItemChargeConfig.KEY_BINDING_NECKLACE) - 1);
+				updateBindingNecklaceCharges(config.bindingNecklace() - 1);
 			}
 			else if (bindingNecklaceCheckMatcher.find())
 			{
@@ -350,7 +347,7 @@ public class ItemChargePlugin extends Plugin
 
 				if (equipment.contains(ItemID.RING_OF_FORGING))
 				{
-					int charges = Ints.constrainToRange(getItemCharges(ItemChargeConfig.KEY_RING_OF_FORGING) - 1, 0, MAX_RING_OF_FORGING_CHARGES);
+					int charges = Ints.constrainToRange(config.ringOfForging() - 1, 0, MAX_RING_OF_FORGING_CHARGES);
 					updateRingOfForgingCharges(charges);
 				}
 			}
@@ -369,28 +366,28 @@ public class ItemChargePlugin extends Plugin
 
 				if (match.equals("one"))
 				{
-					setItemCharges(ItemChargeConfig.KEY_CHRONICLE, 1);
+					config.chronicle(1);
 				}
 				else
 				{
-					setItemCharges(ItemChargeConfig.KEY_CHRONICLE, Integer.parseInt(match));
+					config.chronicle(Integer.parseInt(match));
 				}
 			}
 			else if (chronicleUseAndCheckMatcher.find())
 			{
-				setItemCharges(ItemChargeConfig.KEY_CHRONICLE, Integer.parseInt(chronicleUseAndCheckMatcher.group(1)));
+				config.chronicle(Integer.parseInt(chronicleUseAndCheckMatcher.group(1)));
 			}
 			else if (message.equals(CHRONICLE_ONE_CHARGE_TEXT))
 			{
-				setItemCharges(ItemChargeConfig.KEY_CHRONICLE, 1);
+				config.chronicle(1);
 			}
 			else if (message.equals(CHRONICLE_EMPTY_TEXT) || message.equals(CHRONICLE_NO_CHARGES_TEXT))
 			{
-				setItemCharges(ItemChargeConfig.KEY_CHRONICLE, 0);
+				config.chronicle(0);
 			}
 			else if (message.equals(CHRONICLE_FULL_TEXT))
 			{
-				setItemCharges(ItemChargeConfig.KEY_CHRONICLE, 1000);
+				config.chronicle(1000);
 			}
 		}
 	}
@@ -504,7 +501,7 @@ public class ItemChargePlugin extends Plugin
 
 	private void updateDodgyNecklaceCharges(final int value)
 	{
-		setItemCharges(ItemChargeConfig.KEY_DODGY_NECKLACE, value);
+		config.dodgyNecklace(value);
 
 		if (config.showInfoboxes() && config.showDodgyCount())
 		{
@@ -521,7 +518,7 @@ public class ItemChargePlugin extends Plugin
 
 	private void updateAmuletOfChemistryCharges(final int value)
 	{
-		setItemCharges(ItemChargeConfig.KEY_AMULET_OF_CHEMISTRY, value);
+		config.amuletOfChemistry(value);
 
 		if (config.showInfoboxes() && config.showAmuletOfChemistryCharges())
 		{
@@ -538,7 +535,7 @@ public class ItemChargePlugin extends Plugin
 
 	private void updateAmuletOfBountyCharges(final int value)
 	{
-		setItemCharges(ItemChargeConfig.KEY_AMULET_OF_BOUNTY, value);
+		config.amuletOfBounty(value);
 
 		if (config.showInfoboxes() && config.showAmuletOfBountyCharges())
 		{
@@ -555,7 +552,7 @@ public class ItemChargePlugin extends Plugin
 
 	private void updateBindingNecklaceCharges(final int value)
 	{
-		setItemCharges(ItemChargeConfig.KEY_BINDING_NECKLACE, value);
+		config.bindingNecklace(value);
 
 		if (config.showInfoboxes() && config.showBindingNecklaceCharges())
 		{
@@ -573,7 +570,7 @@ public class ItemChargePlugin extends Plugin
 	private void updateExplorerRingCharges(final int value)
 	{
 		// Note: Varbit counts upwards. We count down from the maximum charges.
-		setItemCharges(ItemChargeConfig.KEY_EXPLORERS_RING, MAX_EXPLORER_RING_CHARGES - value);
+		config.explorerRing(MAX_EXPLORER_RING_CHARGES - value);
 
 		if (config.showInfoboxes() && config.showExplorerRingCharges())
 		{
@@ -590,7 +587,7 @@ public class ItemChargePlugin extends Plugin
 
 	private void updateRingOfForgingCharges(final int value)
 	{
-		setItemCharges(ItemChargeConfig.KEY_RING_OF_FORGING, value);
+		config.ringOfForging(value);
 
 		if (config.showInfoboxes() && config.showRingOfForgingCount())
 		{
@@ -657,27 +654,27 @@ public class ItemChargePlugin extends Plugin
 		{
 			if (id == ItemID.DODGY_NECKLACE && type == ItemWithSlot.DODGY_NECKLACE)
 			{
-				charges = getItemCharges(ItemChargeConfig.KEY_DODGY_NECKLACE);
+				charges = config.dodgyNecklace();
 			}
 			else if (id == ItemID.BINDING_NECKLACE && type == ItemWithSlot.BINDING_NECKLACE)
 			{
-				charges = getItemCharges(ItemChargeConfig.KEY_BINDING_NECKLACE);
+				charges = config.bindingNecklace();
 			}
 			else if ((id >= ItemID.EXPLORERS_RING_1 && id <= ItemID.EXPLORERS_RING_4) && type == ItemWithSlot.EXPLORER_RING)
 			{
-				charges = getItemCharges(ItemChargeConfig.KEY_EXPLORERS_RING);
+				charges = config.explorerRing();
 			}
 			else if (id == ItemID.RING_OF_FORGING && type == ItemWithSlot.RING_OF_FORGING)
 			{
-				charges = getItemCharges(ItemChargeConfig.KEY_RING_OF_FORGING);
+				charges = config.ringOfForging();
 			}
 			else if (id == ItemID.AMULET_OF_CHEMISTRY && type == ItemWithSlot.AMULET_OF_CHEMISTY)
 			{
-				charges = getItemCharges(ItemChargeConfig.KEY_AMULET_OF_CHEMISTRY);
+				charges = config.amuletOfChemistry();
 			}
 			else if (id == ItemID.AMULET_OF_BOUNTY && type == ItemWithSlot.AMULET_OF_BOUNTY)
 			{
-				charges = getItemCharges(ItemChargeConfig.KEY_AMULET_OF_BOUNTY);
+				charges = config.amuletOfBounty();
 			}
 		}
 		else if (itemWithCharge.getType() == type.getType())
@@ -694,26 +691,6 @@ public class ItemChargePlugin extends Plugin
 		final BufferedImage image = itemManager.getImage(id);
 		final ItemChargeInfobox infobox = new ItemChargeInfobox(this, image, name, charges, type, slot);
 		infoBoxManager.addInfoBox(infobox);
-	}
-
-	int getItemCharges(String key)
-	{
-		// Migrate old non-profile configurations
-		Integer i = configManager.getConfiguration(ItemChargeConfig.GROUP, key, Integer.class);
-		if (i != null)
-		{
-			configManager.unsetConfiguration(ItemChargeConfig.GROUP, key);
-			configManager.setRSProfileConfiguration(ItemChargeConfig.GROUP, key, i);
-			return i;
-		}
-
-		i = configManager.getRSProfileConfiguration(ItemChargeConfig.GROUP, key, Integer.class);
-		return i == null ? -1 : i;
-	}
-
-	private void setItemCharges(String key, int value)
-	{
-		configManager.setRSProfileConfiguration(ItemChargeConfig.GROUP, key, value);
 	}
 
 	private void removeInfobox(final ItemWithSlot item)

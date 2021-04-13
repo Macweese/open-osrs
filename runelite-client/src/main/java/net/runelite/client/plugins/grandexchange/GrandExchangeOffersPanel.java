@@ -30,8 +30,6 @@ import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import javax.inject.Inject;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import net.runelite.api.GrandExchangeOffer;
@@ -40,14 +38,12 @@ import net.runelite.api.ItemComposition;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.components.PluginErrorPanel;
 
-class GrandExchangeOffersPanel extends JPanel
+public class GrandExchangeOffersPanel extends JPanel
 {
 	private static final String ERROR_PANEL = "ERROR_PANEL";
 	private static final String OFFERS_PANEL = "OFFERS_PANEL";
 
 	private static final int MAX_OFFERS = 8;
-
-	private final GrandExchangePlugin grandExchangePlugin;
 
 	private final GridBagConstraints constraints = new GridBagConstraints();
 	private final CardLayout cardLayout = new CardLayout();
@@ -60,11 +56,8 @@ class GrandExchangeOffersPanel extends JPanel
 
 	private final GrandExchangeOfferSlot[] offerSlotPanels = new GrandExchangeOfferSlot[MAX_OFFERS];
 
-	@Inject
-	private GrandExchangeOffersPanel(final GrandExchangePlugin grandExchangePlugin)
+	GrandExchangeOffersPanel()
 	{
-		this.grandExchangePlugin = grandExchangePlugin;
-
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
 
@@ -103,7 +96,10 @@ class GrandExchangeOffersPanel extends JPanel
 	void resetOffers()
 	{
 		offerPanel.removeAll();
-		Arrays.fill(offerSlotPanels, null);
+		for (int i = 0; i < offerSlotPanels.length; i++)
+		{
+			offerSlotPanels[i] = null;
+		}
 		updateEmptyOffersPanel();
 	}
 
@@ -126,16 +122,15 @@ class GrandExchangeOffersPanel extends JPanel
 		}
 
 		/* If slot was empty, and is now filled, add it to the list */
-		GrandExchangeOfferSlot offerSlot = offerSlotPanels[slot];
-		if (offerSlot == null)
+		if (offerSlotPanels[slot] == null)
 		{
-			offerSlot = new GrandExchangeOfferSlot(grandExchangePlugin);
-			offerSlotPanels[slot] = offerSlot;
-			offerPanel.add(offerSlot, constraints);
+			GrandExchangeOfferSlot newSlot = new GrandExchangeOfferSlot();
+			offerSlotPanels[slot] = newSlot;
+			offerPanel.add(newSlot, constraints);
 			constraints.gridy++;
 		}
 
-		offerSlot.updateOffer(item, itemImage, newOffer);
+		offerSlotPanels[slot].updateOffer(item, itemImage, newOffer);
 
 		removeTopMargin();
 

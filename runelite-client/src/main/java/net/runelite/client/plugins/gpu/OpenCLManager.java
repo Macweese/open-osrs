@@ -511,14 +511,7 @@ class OpenCLManager
 				new long[]{(long) largeModels * (LARGE_SIZE / largeFaceCount)}, new long[]{LARGE_SIZE / largeFaceCount}, 1, new cl_event[]{acquireGLBuffers}, computeEvents[numComputeEvents++]);
 		}
 
-		if (numComputeEvents == 0)
-		{
-			clEnqueueReleaseGLObjects(commandQueue, glBuffers.length, glBuffers, 0, null, null);
-		}
-		else
-		{
-			clEnqueueReleaseGLObjects(commandQueue, glBuffers.length, glBuffers, numComputeEvents, computeEvents, null);
-		}
+		clEnqueueReleaseGLObjects(commandQueue, glBuffers.length, glBuffers, numComputeEvents, computeEvents, null);
 	}
 
 	void finish()

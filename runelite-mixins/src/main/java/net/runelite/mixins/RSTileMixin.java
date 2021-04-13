@@ -60,9 +60,7 @@ import net.runelite.api.mixins.Inject;
 import net.runelite.api.mixins.Mixin;
 import net.runelite.api.mixins.Shadow;
 import net.runelite.rs.api.RSActor;
-import net.runelite.rs.api.RSBoundaryObject;
 import net.runelite.rs.api.RSClient;
-import net.runelite.rs.api.RSFloorDecoration;
 import net.runelite.rs.api.RSRenderable;
 import net.runelite.rs.api.RSGameObject;
 import net.runelite.rs.api.RSGraphicsObject;
@@ -72,7 +70,6 @@ import net.runelite.rs.api.RSNodeDeque;
 import net.runelite.rs.api.RSProjectile;
 import net.runelite.rs.api.RSTile;
 import net.runelite.rs.api.RSTileItem;
-import net.runelite.rs.api.RSWallDecoration;
 import org.slf4j.Logger;
 
 @Mixin(RSTile.class)
@@ -264,21 +261,9 @@ public abstract class RSTileMixin implements RSTile
 	public void wallObjectChanged(int idx)
 	{
 		WallObject previous = previousWallObject;
-		RSBoundaryObject current = (RSBoundaryObject) getWallObject();
+		WallObject current = getWallObject();
 
 		previousWallObject = current;
-
-		if (current != null)
-		{
-			int plane = getRenderLevel();
-
-			if ((client.getTileSettings()[1][getX()][getY()] & 2) == 2)
-			{
-				plane--;
-			}
-
-			current.setPlane(plane);
-		}
 
 		if (current == null && previous != null)
 		{
@@ -309,21 +294,9 @@ public abstract class RSTileMixin implements RSTile
 	public void decorativeObjectChanged(int idx)
 	{
 		DecorativeObject previous = previousDecorativeObject;
-		RSWallDecoration current = (RSWallDecoration) getDecorativeObject();
+		DecorativeObject current = getDecorativeObject();
 
 		previousDecorativeObject = current;
-
-		if (current != null)
-		{
-			int plane = getRenderLevel();
-
-			if ((client.getTileSettings()[1][getX()][getY()] & 2) == 2)
-			{
-				plane--;
-			}
-
-			current.setPlane(plane);
-		}
 
 		if (current == null && previous != null)
 		{
@@ -354,21 +327,9 @@ public abstract class RSTileMixin implements RSTile
 	public void groundObjectChanged(int idx)
 	{
 		GroundObject previous = previousGroundObject;
-		RSFloorDecoration current = (RSFloorDecoration) getGroundObject();
+		GroundObject current = getGroundObject();
 
 		previousGroundObject = current;
-
-		if (current != null)
-		{
-			int plane = getRenderLevel();
-
-			if ((client.getTileSettings()[1][getX()][getY()] & 2) == 2)
-			{
-				plane--;
-			}
-
-			current.setPlane(plane);
-		}
 
 		if (current == null && previous != null)
 		{
@@ -417,21 +378,23 @@ public abstract class RSTileMixin implements RSTile
 		// Update previous object to current
 		previousGameObjects[idx] = current;
 
-		if (current != null)
-		{
-			int plane = getRenderLevel();
+		// Last game object
+		RSGameObject last = lastGameObject;
 
-			if ((client.getTileSettings()[1][getX()][getY()] & 2) == 2)
-			{
-				plane--;
-			}
-
-			current.setPlane(plane);
-		}
+		// Update last game object
+		lastGameObject = current;
 
 		// Duplicate event, return
 		if (current == previous)
 		{
+			return;
+		}
+
+		if (current != null && current == last)
+		{
+			// When >1 tile objects are added to the scene, the same GameObject is added to
+			// multiple tiles. We keep lastGameObject to prevent duplicate spawn events from
+			// firing for these objects.
 			return;
 		}
 
@@ -442,14 +405,12 @@ public abstract class RSTileMixin implements RSTile
 		{
 			RSRenderable renderable = current.getRenderable();
 			currentInvalid = renderable instanceof RSActor || renderable instanceof RSProjectile || renderable instanceof RSGraphicsObject;
-			currentInvalid |= current.getStartX() != this.getX() || current.getStartY() != this.getY();
 		}
 
 		if (previous != null)
 		{
 			RSRenderable renderable = previous.getRenderable();
 			prevInvalid = renderable instanceof RSActor || renderable instanceof RSProjectile || renderable instanceof RSGraphicsObject;
-			prevInvalid |= previous.getStartX() != this.getX() || previous.getStartY() != this.getY();
 		}
 
 		Logger logger = client.getLogger();

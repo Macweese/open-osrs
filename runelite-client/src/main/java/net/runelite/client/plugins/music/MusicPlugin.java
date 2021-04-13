@@ -557,16 +557,11 @@ public class MusicPlugin extends Plugin
 				return;
 			}
 
-			Widget[] trackChildren = track.getChildren();
-
-			if (trackChildren != null)
+			for (Widget w : track.getChildren())
 			{
-				for (Widget w : trackChildren)
+				if (w != null)
 				{
-					if (w != null)
-					{
-						w.setAction(0, null);
-					}
+					w.setAction(0, null);
 				}
 			}
 
@@ -593,11 +588,7 @@ public class MusicPlugin extends Plugin
 		public void shutDown()
 		{
 			super.shutDown();
-
-			if (this.handle != null)
-			{
-				handle.setSpriteId(SpriteID.SETTINGS_SLIDER_HANDLE_BLUE);
-			}
+			handle.setSpriteId(SpriteID.SETTINGS_SLIDER_HANDLE_BLUE);
 
 			this.icon.setOnOpListener((Object[]) null);
 

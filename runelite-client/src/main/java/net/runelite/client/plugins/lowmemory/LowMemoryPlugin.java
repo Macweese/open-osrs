@@ -24,16 +24,12 @@
  */
 package net.runelite.client.plugins.lowmemory;
 
-import com.google.inject.Provides;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import net.runelite.api.events.BeforeRender;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.callback.ClientThread;
-import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
@@ -51,15 +47,12 @@ public class LowMemoryPlugin extends Plugin
 	@Inject
 	private ClientThread clientThread;
 
-	@Inject
-	private LowMemoryConfig config;
-
 	@Override
 	protected void startUp()
 	{
 		if (client.getGameState() == GameState.LOGGED_IN)
 		{
-			clientThread.invoke(() -> client.changeMemoryMode(config.lowDetail()));
+			clientThread.invoke(() -> client.changeMemoryMode(true));
 		}
 	}
 
@@ -67,21 +60,6 @@ public class LowMemoryPlugin extends Plugin
 	protected void shutDown()
 	{
 		clientThread.invoke(() -> client.changeMemoryMode(false));
-	}
-
-	@Provides
-	LowMemoryConfig provideConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(LowMemoryConfig.class);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged configChanged)
-	{
-		if (configChanged.getGroup().equals(LowMemoryConfig.GROUP))
-		{
-			clientThread.invoke(() -> client.changeMemoryMode(config.lowDetail()));
-		}
 	}
 
 	@Subscribe
@@ -92,16 +70,7 @@ public class LowMemoryPlugin extends Plugin
 		// which breaks the gpu plugin due to it requiring the 128x128px textures
 		if (event.getGameState() == GameState.LOGIN_SCREEN)
 		{
-			client.changeMemoryMode(config.lowDetail());
+			client.changeMemoryMode(true);
 		}
-	}
-
-	@Subscribe
-	public void onBeforeRender(BeforeRender beforeRender)
-	{
-		// This needs to be set to the current plane, but there is no event for plane change, so
-		// just set it each render.
-		client.getScene().
-			setMinLevel(config.hideLowerPlanes() ? client.getPlane() : 0);
 	}
 }

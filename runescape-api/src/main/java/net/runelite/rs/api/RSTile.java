@@ -24,10 +24,6 @@ public interface RSTile extends Tile
 	@Override
 	DecorativeObject getDecorativeObject();
 
-	@Import("wallDecoration")
-	@Override
-	void setDecorativeObject(DecorativeObject object);
-	
 	@Import("floorDecoration")
 	@Override
 	GroundObject getGroundObject();
@@ -47,9 +43,6 @@ public interface RSTile extends Tile
 	@Import("paint")
 	@Override
 	SceneTilePaint getSceneTilePaint();
-
-	@Import("paint")
-	void setSceneTilePaint(SceneTilePaint paint);
 
 	@Import("model")
 	@Override

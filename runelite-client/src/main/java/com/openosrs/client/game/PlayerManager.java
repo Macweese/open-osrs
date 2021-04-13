@@ -384,7 +384,7 @@ public class PlayerManager
 			}
 			else if (itemComposition.isTradeable())
 			{
-				prices.put(id, itemManager.getItemPrice(id));
+				prices.put(id, itemManager.getItemPrice(id, false));
 			}
 		}
 

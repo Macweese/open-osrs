@@ -32,6 +32,8 @@ import com.google.inject.Singleton;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -41,6 +43,7 @@ import java.util.Stack;
 import java.util.stream.Stream;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -70,12 +73,13 @@ import net.runelite.api.widgets.WidgetType;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ColorUtil;
 
 @Slf4j
 @Singleton
-class WidgetInspector extends DevToolsFrame
+class WidgetInspector extends JFrame
 {
 	private static final Map<Integer, WidgetInfo> widgetIdMap = new HashMap<>();
 
@@ -119,6 +123,7 @@ class WidgetInspector extends DevToolsFrame
 		ClientThread clientThread,
 		WidgetInfoTableModel infoTableModel,
 		DevToolsConfig config,
+		DevToolsPlugin plugin,
 		EventBus eventBus,
 		Provider<WidgetInspectorOverlay> overlay,
 		OverlayManager overlayManager)
@@ -133,6 +138,18 @@ class WidgetInspector extends DevToolsFrame
 		eventBus.register(this);
 
 		setTitle("OpenOSRS Widget Inspector");
+		setIconImage(ClientUI.ICON);
+
+		// Reset highlight on close
+		addWindowListener(new WindowAdapter()
+		{
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				close();
+				plugin.getWidgetInspector().setActive(false);
+			}
+		});
 
 		setLayout(new BorderLayout());
 
@@ -385,21 +402,21 @@ class WidgetInspector extends DevToolsFrame
 		return widgetIdMap.get(packedId);
 	}
 
-	@Override
 	public void open()
 	{
-		super.open();
+		setVisible(true);
+		toFront();
+		repaint();
 		overlayManager.add(this.overlay.get());
 		clientThread.invokeLater(this::addPickerWidget);
 	}
 
-	@Override
 	public void close()
 	{
 		overlayManager.remove(this.overlay.get());
 		clientThread.invokeLater(this::removePickerWidget);
 		setSelectedWidget(null, -1, false);
-		super.close();
+		setVisible(false);
 	}
 
 	private void removePickerWidget()

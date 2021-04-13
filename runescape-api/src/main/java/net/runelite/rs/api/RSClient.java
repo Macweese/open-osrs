@@ -1404,7 +1404,4 @@ public interface RSClient extends RSGameEngine, Client
 
 	@Construct
 	RSBuffer createBuffer(byte[] bytes);
-
-	@Construct
-	RSSceneTilePaint createSceneTilePaint(int swColor, int seColor, int neColor, int nwColor, int texture, int rgb, boolean isFlat);
 }

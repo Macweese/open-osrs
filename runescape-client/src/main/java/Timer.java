@@ -8,8 +8,7 @@ import net.runelite.mapping.ObfuscatedSignature;
 @Implements("Timer")
 public class Timer {
 	@ObfuscatedName("f")
-	@Export("cacheSubPaths")
-	static String[] cacheSubPaths;
+	static String[] field3621;
 	@ObfuscatedName("n")
 	@ObfuscatedGetter(
 		longValue = -2999131098664295081L

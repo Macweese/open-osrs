@@ -358,14 +358,9 @@ public class DiscordPlugin extends Plugin
 
 	private void checkForGameStateUpdate()
 	{
-		final boolean isLoggedIn = client.getGameState() == GameState.LOGGED_IN;
-
-		if (config.showMainMenu() || isLoggedIn)
-		{
-			discordState.triggerEvent(isLoggedIn
-					? DiscordGameEventType.IN_GAME
-					: DiscordGameEventType.IN_MENU);
-		}
+		discordState.triggerEvent(client.getGameState() == GameState.LOGGED_IN
+			? DiscordGameEventType.IN_GAME
+			: DiscordGameEventType.IN_MENU);
 	}
 
 	private void checkForAreaUpdate()

@@ -32,19 +32,9 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 
-@ConfigGroup(ItemChargeConfig.GROUP)
+@ConfigGroup("itemCharge")
 public interface ItemChargeConfig extends Config
 {
-	String GROUP = "itemCharge";
-
-	String KEY_AMULET_OF_BOUNTY = "amuletOfBounty";
-	String KEY_AMULET_OF_CHEMISTRY = "amuletOfChemistry";
-	String KEY_BINDING_NECKLACE = "bindingNecklace";
-	String KEY_CHRONICLE = "chronicle";
-	String KEY_DODGY_NECKLACE = "dodgyNecklace";
-	String KEY_EXPLORERS_RING = "explorerRing";
-	String KEY_RING_OF_FORGING = "ringOfForging";
-
 	@ConfigSection(
 		name = "Charge Settings",
 		description = "Configuration for which charges should be displayed",
@@ -138,6 +128,24 @@ public interface ItemChargeConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "dodgyNecklace",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default int dodgyNecklace()
+	{
+		return -1;
+	}
+
+	@ConfigItem(
+		keyName = "dodgyNecklace",
+		name = "",
+		description = ""
+	)
+	void dodgyNecklace(int dodgyNecklace);
 
 	@ConfigItem(
 		keyName = "showImpCharges",
@@ -248,6 +256,24 @@ public interface ItemChargeConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "amuletOfChemistry",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default int amuletOfChemistry()
+	{
+		return -1;
+	}
+
+	@ConfigItem(
+		keyName = "amuletOfChemistry",
+		name = "",
+		description = ""
+	)
+	void amuletOfChemistry(int amuletOfChemistry);
+
+	@ConfigItem(
 		keyName = "showAmuletOfBountyCharges",
 		name = "Amulet of Bounty Charges",
 		description = "Show Amulet of bounty item charges",
@@ -258,6 +284,24 @@ public interface ItemChargeConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "amuletOfBounty",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default int amuletOfBounty()
+	{
+		return -1;
+	}
+
+	@ConfigItem(
+		keyName = "amuletOfBounty",
+		name = "",
+		description = ""
+	)
+	void amuletOfBounty(int amuletOfBounty);
 
 	@ConfigItem(
 		keyName = "recoilNotification",
@@ -284,6 +328,24 @@ public interface ItemChargeConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "bindingNecklace",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default int bindingNecklace()
+	{
+		return -1;
+	}
+
+	@ConfigItem(
+		keyName = "bindingNecklace",
+		name = "",
+		description = ""
+	)
+	void bindingNecklace(int bindingNecklace);
+
+	@ConfigItem(
 		keyName = "bindingNotification",
 		name = "Binding Necklace Notification",
 		description = "Send a notification when a Binding necklace breaks",
@@ -308,6 +370,24 @@ public interface ItemChargeConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "explorerRing",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default int explorerRing()
+	{
+		return -1;
+	}
+
+	@ConfigItem(
+		keyName = "explorerRing",
+		name = "",
+		description = ""
+	)
+	void explorerRing(int explorerRing);
+
+	@ConfigItem(
 		keyName = "showRingOfForgingCount",
 		name = "Ring of Forging Charges",
 		description = "Show Ring of forging item charges",
@@ -318,6 +398,24 @@ public interface ItemChargeConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "ringOfForging",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default int ringOfForging()
+	{
+		return -1;
+	}
+
+	@ConfigItem(
+		keyName = "ringOfForging",
+		name = "",
+		description = ""
+	)
+	void ringOfForging(int ringOfForging);
 
 	@ConfigItem(
 		keyName = "ringOfForgingNotification",
@@ -353,4 +451,22 @@ public interface ItemChargeConfig extends Config
 	{
 		return false;
 	}
+
+	@ConfigItem(
+		keyName = "chronicle",
+		name = "",
+		description = "",
+		hidden = true
+	)
+	default int chronicle()
+	{
+		return -1;
+	}
+
+	@ConfigItem(
+		keyName = "chronicle",
+		name = "",
+		description = ""
+	)
+	void chronicle(int chronicle);
 }

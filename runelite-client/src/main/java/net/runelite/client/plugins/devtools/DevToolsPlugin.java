@@ -138,13 +138,11 @@ public class DevToolsPlugin extends Plugin
 	private DevToolsButton interacting;
 	private DevToolsButton examine;
 	private DevToolsButton detachedCamera;
-	private DevToolsButton logMenuActions;
 	private DevToolsButton widgetInspector;
 	private DevToolsButton varInspector;
 	private DevToolsButton soundEffects;
 	private DevToolsButton scriptInspector;
 	private DevToolsButton inventoryInspector;
-	private DevToolsButton shell;
 	private NavigationButton navButton;
 
 	@Provides
@@ -184,13 +182,11 @@ public class DevToolsPlugin extends Plugin
 		examine = new DevToolsButton("Examine");
 
 		detachedCamera = new DevToolsButton("Detached Camera");
-		logMenuActions = new DevToolsButton("Log Menu Actions");
 		widgetInspector = new DevToolsButton("Widget Inspector");
 		varInspector = new DevToolsButton("Var Inspector");
 		soundEffects = new DevToolsButton("Sound Effects");
 		scriptInspector = new DevToolsButton("Script Inspector");
 		inventoryInspector = new DevToolsButton("Inventory Inspector");
-		shell = new DevToolsButton("Shell");
 
 		overlayManager.add(overlay);
 		overlayManager.add(locationOverlay);
@@ -347,7 +343,7 @@ public class DevToolsPlugin extends Plugin
 				int id = Integer.parseInt(args[0]);
 				Player localPlayer = client.getLocalPlayer();
 				localPlayer.setAnimation(id);
-				localPlayer.setAnimationFrame(0);
+				localPlayer.setActionFrame(0);
 				break;
 			}
 			case "gfx":

@@ -34,20 +34,20 @@ public class KingdomCounter extends Counter
 
 	KingdomCounter(BufferedImage image, KingdomPlugin plugin)
 	{
-		super(image, plugin, plugin.getApproval());
+		super(image, plugin, plugin.getFavor());
 		this.plugin = plugin;
 	}
 
 	@Override
 	public String getText()
 	{
-		return KingdomPlugin.getApprovalPercent(plugin.getApproval()) + "%";
+		return KingdomPlugin.getFavorPercent(plugin.getFavor()) + "%";
 	}
 
 	@Override
 	public String getTooltip()
 	{
-		return "Approval: " + plugin.getApproval() + "/" + KingdomPlugin.MAX_APPROVAL + "</br>"
+		return "Favor: " + plugin.getFavor() + "/127" + "</br>"
 			+ "Coffer: " + QuantityFormatter.quantityToStackSize(plugin.getCoffer());
 	}
 }

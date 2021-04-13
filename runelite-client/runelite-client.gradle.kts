@@ -43,17 +43,16 @@ apply<BootstrapPlugin>()
 description = "RuneLite Client"
 
 dependencies {
-    annotationProcessor(group = "org.projectlombok", name = "lombok", version = ProjectVersions.lombokVersion)
+    annotationProcessor(group = "org.projectlombok", name = "lombok", version = "1.18.4")
     annotationProcessor(group = "org.pf4j", name = "pf4j", version = "3.5.0")
 
     api(project(":runelite-api"))
 
     compileOnly(group = "javax.annotation", name = "javax.annotation-api", version = "1.3.2")
-    compileOnly(group = "org.projectlombok", name = "lombok", version = ProjectVersions.lombokVersion)
+    compileOnly(group = "org.projectlombok", name = "lombok", version = "1.18.4")
     compileOnly(group = "net.runelite", name = "orange-extensions", version = "1.0")
 
     implementation(project(":http-api"))
-    implementation(project(":runelite-jshell"))
     implementation(group = "ch.qos.logback", name = "logback-classic", version = "1.2.3")
     implementation(group = "com.google.code.gson", name = "gson", version = "2.8.5")
     implementation(group = "com.google.guava", name = "guava", version = "23.2-jre")
@@ -62,9 +61,9 @@ dependencies {
     implementation(group = "com.jakewharton.rxrelay3", name = "rxrelay", version = "3.0.0")
     implementation(group = "com.squareup.okhttp3", name = "okhttp", version = "3.7.0")
     implementation(group = "io.reactivex.rxjava3", name = "rxjava", version = "3.0.10")
-    implementation(group = "net.java.dev.jna", name = "jna", version = "5.7.0")
+    implementation(group = "net.java.dev.jna", name = "jna", version = "4.5.1")
     implementation(group = "org.jgroups", name = "jgroups", version = "5.0.4.Final")
-    implementation(group = "net.java.dev.jna", name = "jna-platform", version = "5.7.0")
+    implementation(group = "net.java.dev.jna", name = "jna-platform", version = "4.5.1")
     implementation(group = "net.runelite", name = "discord", version = "1.4")
     implementation(group = "net.runelite.pushingpixels", name = "substance", version = "8.0.02")
     implementation(group = "net.sf.jopt-simple", name = "jopt-simple", version = "5.0.1")
@@ -87,17 +86,17 @@ dependencies {
     runtimeOnly(group = "net.runelite.gluegen", name = "gluegen-rt", version = "2.4.0-rc-20200429", classifier = "natives-linux-amd64")
     runtimeOnly(group = "net.runelite.gluegen", name = "gluegen-rt", version = "2.4.0-rc-20200429", classifier = "natives-windows-amd64")
     runtimeOnly(group = "net.runelite.gluegen", name = "gluegen-rt", version = "2.4.0-rc-20200429", classifier = "natives-windows-i586")
-    runtimeOnly(group = "net.runelite.gluegen", name = "gluegen-rt-natives-macosx", version = "2.4.0-rc-20210117")
+    runtimeOnly(group = "net.runelite.gluegen", name = "gluegen-rt", version = "2.4.0-rc-20200429", classifier = "natives-macosx-universal")
     runtimeOnly(group = "net.runelite.jogl", name = "jogl-all", version = "2.4.0-rc-20200429", classifier = "natives-linux-amd64")
     runtimeOnly(group = "net.runelite.jogl", name = "jogl-all", version = "2.4.0-rc-20200429", classifier = "natives-windows-amd64")
     runtimeOnly(group = "net.runelite.jogl", name = "jogl-all", version = "2.4.0-rc-20200429", classifier = "natives-windows-i586")
-    runtimeOnly(group = "net.runelite.jogl", name = "jogl-all-natives-macosx", version = "2.4.0-rc-20210117")
+    runtimeOnly(group = "net.runelite.jogl", name = "jogl-all", version = "2.4.0-rc-20200429", classifier = "natives-macosx-universal")
     runtimeOnly(group = "net.runelite.jocl", name = "jocl", version = "1.0", classifier = "macos-x64")
     runtimeOnly(group = "net.runelite.jocl", name = "jocl", version = "1.0", classifier = "macos-arm64")
 
-    testAnnotationProcessor(group = "org.projectlombok", name = "lombok", version = ProjectVersions.lombokVersion)
+    testAnnotationProcessor(group = "org.projectlombok", name = "lombok", version = "1.18.4")
 
-    testCompileOnly(group = "org.projectlombok", name = "lombok", version = ProjectVersions.lombokVersion)
+    testCompileOnly(group = "org.projectlombok", name = "lombok", version = "1.18.4")
 
     testImplementation(group = "com.google.inject.extensions", name = "guice-grapher", version = "4.1.0")
     testImplementation(group = "com.google.inject.extensions", name = "guice-testlib", version = "4.1.0")
@@ -125,12 +124,9 @@ tasks {
         finalizedBy("shadowJar")
     }
 
-    compileJava {
-        dependsOn("packInjectedClient")
-    }
-
     processResources {
-        finalizedBy("filterResources")
+        dependsOn(":injector:build")
+        finalizedBy("filterResources", "packInjectedClient")
     }
 
     register<Copy>("filterResources") {
@@ -153,8 +149,6 @@ tasks {
     }
 
     register<Copy>("packInjectedClient") {
-        dependsOn(":injector:inject")
-
         from("src/main/resources/")
         include("**/injected-client.oprs")
         into("${buildDir}/resources/main")

@@ -56,19 +56,7 @@ public abstract class RSTileObjectMixin implements TileObject
 	@Inject
 	public WorldPoint getWorldLocation()
 	{
-		if (this instanceof RSGameObject)
-		{
-			RSGameObject gameObject = (RSGameObject) this;
-			int startX = gameObject.getStartX();
-			int startY = gameObject.getStartY();
-			int diffX = gameObject.getEndX() - startX;
-			int diffY = gameObject.getEndY() - startY;
-			return WorldPoint.fromScene(client, startX + diffX / 2, startY + diffY / 2, getPlane());
-		}
-		else
-		{
-			return WorldPoint.fromLocal(client, getX(), getY(), getPlane());
-		}
+		return WorldPoint.fromLocal(client, getX(), getY(), getPlane());
 	}
 
 	@Override
@@ -96,16 +84,7 @@ public abstract class RSTileObjectMixin implements TileObject
 	@Inject
 	public Polygon getCanvasTilePoly()
 	{
-		int sizeX = 1;
-		int sizeY = 1;
-
-		if (this instanceof RSGameObject)
-		{
-			sizeX = ((RSGameObject) this).sizeX();
-			sizeY = ((RSGameObject) this).sizeY();
-		}
-
-		return Perspective.getCanvasTileAreaPoly(client, getLocalLocation(), sizeX, sizeY, getPlane(), 0);
+		return Perspective.getCanvasTilePoly(client, getLocalLocation());
 	}
 
 	@Override

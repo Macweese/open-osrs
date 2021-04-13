@@ -25,7 +25,6 @@
  */
 package net.runelite.client.plugins.devtools;
 
-import com.google.inject.ProvisionException;
 import java.awt.GridLayout;
 import java.awt.TrayIcon;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.MenuAction;
@@ -46,7 +44,6 @@ import net.runelite.client.ui.overlay.infobox.Counter;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ImageUtil;
 
-@Slf4j
 class DevToolsPanel extends PluginPanel
 {
 	private final Client client;
@@ -131,14 +128,31 @@ class DevToolsPanel extends PluginPanel
 			client.setOculusOrbNormalSpeed(!plugin.getDetachedCamera().isActive() ? 36 : 12);
 		});
 
-		container.add(plugin.getLogMenuActions());
-		plugin.getLogMenuActions().addActionListener((ev) -> client.setPrintMenuActions(!plugin.getLogMenuActions().isActive()));
-
 		container.add(plugin.getWidgetInspector());
-		plugin.getWidgetInspector().addFrame(widgetInspector);
+		plugin.getWidgetInspector().addActionListener((ev) ->
+		{
+			if (plugin.getWidgetInspector().isActive())
+			{
+				widgetInspector.close();
+			}
+			else
+			{
+				widgetInspector.open();
+			}
+		});
 
 		container.add(plugin.getVarInspector());
-		plugin.getVarInspector().addFrame(varInspector);
+		plugin.getVarInspector().addActionListener((ev) ->
+		{
+			if (plugin.getVarInspector().isActive())
+			{
+				varInspector.close();
+			}
+			else
+			{
+				varInspector.open();
+			}
+		});
 
 		container.add(plugin.getSoundEffects());
 
@@ -150,7 +164,17 @@ class DevToolsPanel extends PluginPanel
 		container.add(notificationBtn);
 
 		container.add(plugin.getScriptInspector());
-		plugin.getScriptInspector().addFrame(scriptInspector);
+		plugin.getScriptInspector().addActionListener((ev) ->
+		{
+			if (plugin.getScriptInspector().isActive())
+			{
+				scriptInspector.close();
+			}
+			else
+			{
+				scriptInspector.open();
+			}
+		});
 
 		final JButton newInfoboxBtn = new JButton("Infobox");
 		newInfoboxBtn.addActionListener(e ->
@@ -174,26 +198,21 @@ class DevToolsPanel extends PluginPanel
 		container.add(clearInfoboxBtn);
 
 		container.add(plugin.getInventoryInspector());
-		plugin.getInventoryInspector().addFrame(inventoryInspector);
+		plugin.getInventoryInspector().addActionListener((ev) ->
+		{
+			if (plugin.getInventoryInspector().isActive())
+			{
+				inventoryInspector.close();
+			}
+			else
+			{
+				inventoryInspector.open();
+			}
+		});
 
 		final JButton disconnectBtn = new JButton("Disconnect");
 		disconnectBtn.addActionListener(e -> clientThread.invoke(() -> client.setGameState(GameState.CONNECTION_LOST)));
 		container.add(disconnectBtn);
-
-		try
-		{
-			ShellFrame sf = plugin.getInjector().getInstance(ShellFrame.class);
-			container.add(plugin.getShell());
-			plugin.getShell().addFrame(sf);
-		}
-		catch (LinkageError | ProvisionException e)
-		{
-			log.debug("Shell is not supported", e);
-		}
-		catch (Exception e)
-		{
-			log.info("Shell couldn't be loaded", e);
-		}
 
 		return container;
 	}
